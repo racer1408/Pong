@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Pong Game</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background: #222;
+            color: white;
+            overflow: hidden;
+        }
+        #emojiSelection {
+            margin: 20px;
+        }
+      #gameCanvas {
+    background-size: cover;
+    display: none;
+    border: 2px solid white;
+    touch-action: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+    
+    </style>
+</head>
+<body>
+<h2> heyy friends I'm Yash I have made this emoji pong game. I hope you will enjoy it</h2>
+    <h2>Choose Your Emoji</h2>
+    <div id="emojiSelection">
+        <button onclick="startGame('🔥')">🔥</button>
+        <button onclick="startGame('⚽')">⚽</button>
+        <button onclick="startGame('🎾')">🎾</button>
+        <button onclick="startGame('🍎')">🍎</button>
+        <button onclick="startGame('😃')">😃</button>
+        <button onclick="startGame('💎')">💎</button>
+        <button onclick="startGame('🎸')">🎸</button>
+        <button onclick="startGame('🛸')">🛸</button>
+        <button onclick="startGame('🐱')">🐱</button>
+        <button onclick="startGame('🦊')">🦊</button>
+        <button onclick="startGame('🍕')">🍕</button>
+        <button onclick="startGame('🚀')">🚀</button>
+        <button onclick="startGame('🐲')">🐲</button>
+        <button onclick="startGame('💀')">💀</button>
+        <button onclick="startGame('🎯')">🎯</button>
+        <button onclick="startGame('🥎')">🥎</button>
+        <button onclick="startGame('🎃')">🎃</button>
+        <button onclick="startGame('🦄')">🦄</button>
+        <button onclick="startGame('🎆')">🎆</button>
+    </div>
+
+    <canvas id="gameCanvas" width="600" height="900"></canvas>
+
+    <script>
+        let canvas = document.getElementById("gameCanvas");
+        let ctx = canvas.getContext("2d");
+        let ballEmoji = "⚽"; 
+        let ball = { x: 200, y: 250, dx: 6, dy: 6, size: 20 };
+        let paddle = { x: 150, width: 80, height: 10 };
+        let score = 0;
+        let lastHit = false; 
+
+        function startGame(emoji) {
+            ballEmoji = emoji;
+            document.getElementById("emojiSelection").style.display = "none";
+            canvas.style.display = "block";
+            canvas.addEventListener("touchmove", movePaddle);
+            requestAnimationFrame(updateGame);
+        }
+
+        function movePaddle(event) {
+            let touchX = event.touches[0].clientX - canvas.getBoundingClientRect().left;
+            paddle.x = touchX - paddle.width / 2;
+
+            if (paddle.x < 0) paddle.x = 0;
+            if (paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
+        }
+
+        function updateGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "20px Arial";
+            ctx.fillText("Score: " + score, 10, 30);
+
+            // Draw Paddle
+            ctx.fillStyle = "white";
+            ctx.fillRect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
+
+            ctx.font = "30px Arial";
+            ctx.fillText(ballEmoji, ball.x, ball.y);
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            if (ball.x < 0 || ball.x > canvas.width - ball.size) ball.dx *= -1;
+            if (ball.y < 0) ball.dy *= -1;
+
+            // Fix: Prevent ball from sticking to paddle
+            if (!lastHit && ball.y > canvas.height - 40 && ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+                ball.dy *= -1;
+                score++;
+                lastHit = true;
+                setTimeout(() => lastHit = false, 50); // Delay to prevent multiple scoring
+            }
+
+            if (ball.y > canvas.height) {
+                alert("Game Over! Your Score: " + score);
+                document.location.reload();
+            } else {
+                requestAnimationFrame(updateGame);
+            }
+        }
+    </script>
+
+</body>
+</html>
